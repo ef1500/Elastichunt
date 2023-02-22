@@ -1,7 +1,7 @@
 # Elastichunt
 
 ## Inspiration and purpose
-This tool, inspired by Michael Bazzel from [Inteltechniques](https://inteltechniques.com), helps you search the web for open Elasticsearch databases for OSINT purposes.
+This tool, inspired by Michael Bazzell from [Inteltechniques](https://inteltechniques.com), helps you search the web for open Elasticsearch databases for OSINT purposes.
 The project was based off of a [resource](https://github.com/AmIJesse/Elasticsearch-Crawler) presented in his book, [Open Source Intelligence Techniques](https://inteltechniques.com/book1.html). The tool is great, however, it didn't encompass all the features I would have liked to have.
 
 This program aims to provide you with the "swiss army knife" of elasticsearch databases. Allowing you to Search, locate, and download these databases all in one. 
