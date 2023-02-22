@@ -1,0 +1,8 @@
+[
+    {
+      "filter_name": "allowed_filesizes",
+      "filter_type": "regex",
+      "field_name": "store_size",
+      "filter_items": ["mb", "gb"]
+    }
+  ]
