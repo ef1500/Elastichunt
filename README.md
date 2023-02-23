@@ -13,7 +13,7 @@ This program aims to provide you with the "swiss army knife" of elasticsearch da
   - Fully customizeable filters so you can download databases of interest automatically
   - Download Elasticsearch databases directly from the CLI
     - Automatically resolve database mapping and fieldnames
-    - Prefer the functionality of AmIJesse's [tool](https://github.com/AmIJesse/Elasticsearch-Crawler)? No Problem! You can specify fieldnames you'd like to download directly from the CLI. Use the `-fn` argument for each fieldname you'd like to downlad.
+    - Prefer the functionality of AmIJesse's [tool](https://github.com/AmIJesse/Elasticsearch-Crawler)? No Problem! You can specify fieldnames you'd like to download directly from the CLI. Use the `-fn` argument for each fieldname you'd like to download.
     
 ### Elastichunt in action
 ![OPEMAS](https://user-images.githubusercontent.com/45581646/220704670-3abe8e9f-ebcf-43f6-92ec-e18de551b423.gif)
