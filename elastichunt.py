@@ -185,21 +185,22 @@ class AsyncCLI:
             help="Filename to store crawled data"
         )
         # EXPERIMENTAL - NOT FULLY IMPLEMENTED YET
-        #export_options=self.parser.add_argument_group("Export Options")
-        #export_options.add_argument(
-        #    "--folderformat",
-        #    "-fF",
-        #    type=str,
-        #    help='The format string to use, with percent-encoded substitutions.\n'
-        #                 'Possible substitutions:\n'
-        #                 '  %%Dn  Name\n'
-        #                 '  %%Cn  Cluster name\n'
-        #                 '  %%Vn  Version number\n'
-        #                 '  %%Bf  Build flavor\n'
-        #                 '  %%Bt  Build type\n'
-        #                 '  %%Bs  Build snapshot\n'
-        #                 '  %%Lv  Lucene version'
-        #)
+        export_options=self.parser.add_argument_group("Export Options")
+        export_options.add_argument(
+            "--folderformat",
+            "-fF",
+            type=str,
+            help='The format string to use, with percent-encoded substitutions.\n'
+                         'Possible substitutions:\n'
+                         '  %%Dn  Name\n'
+                         '  %%Cn  Cluster name\n'
+                         '  %%Vn  Version number\n'
+                         '  %%Bf  Build flavor\n'
+                         '  %%Bt  Build type\n'
+                         '  %%Bs  Build snapshot\n'
+                         '  %%Lv  Lucene version'
+                         ' Only works when downloading a single database.'
+        )
 
         self.parser.add_argument(
             '-t',
@@ -222,17 +223,28 @@ class AsyncCLI:
             help="use the Single Download Module"
         )
 
+    def parse_foldername(self, args: argparse.Namespace, 
+                               elastic_api_obj: elastic_api.ElasticAPI):
+        # Create a temporary parser for the folder format
+        temp_parser=util_parser.PercentParser(self.FOLDER_SUBSTITUTIONS, elastic_api_obj.ElasticDB)
+        return temp_parser.parse_string(args.folderformat)
+
     async def download_single_index(self, args: argparse.Namespace):
         """Download a single index
 
         Args:
             args (argparse.Namespace): CLI Args
         """
+        if args.folderformat:
+            download_path = os.path.join(args.downloadpath, args.folderformat)
+        else:
+            download_path = args.downloadpath
+
         host = f"http://{args.ipaddr}:{args.port}"
         db_api = elastic_api.ElasticAPI(
             host=host,
             timeout=args.elastictimeout,
-            download_path=args.downloadpath,
+            download_path=download_path,
             download=True,
             Filters=None
         )
@@ -244,7 +256,7 @@ class AsyncCLI:
             index=args.index,
             timeout=args.timeout,
             filename=output_filename,
-            download_path=args.downloadpath,
+            download_path=download_path,
             folder_name=None,
             fieldnames=args.fieldname
             )
