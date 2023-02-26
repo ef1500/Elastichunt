@@ -28,7 +28,7 @@ def ip_range_to_list(ipaddr):
         list : list of ip addresses
     """
     if '/' in ipaddr: # IP range using slash notation (e.g. "192.168.0.0/16")
-        range_to_list = lambda ip_range: [str(ip) for ip in ipaddress.IPv4Network(ip_range)]
+        range_to_list = lambda ip_range: [str(ip) for ip in ipaddress.IPv4Network(ipaddress.ip_network(ip_range, strict=False))]
         return range_to_list(ipaddr)
     if '-' in ipaddr: # Standalone IP address (e.g. "192.168.1.1")
         return dashed_ip_range_to_list(ipaddr)
@@ -102,6 +102,6 @@ def split_subnet_into_subnets(ip_addr, target_cidr=16):
     ip_address = ip_addr
     if '-' in ip_addr:
         ip_address = ip_range_to_cidr(ip_addr)
-    network = ipaddress.ip_network(ip_address)
+    network = ipaddress.ip_network(ip_address, strict=False)
     subnets = network.subnets(new_prefix=target_cidr)
     return [str(subnet) for subnet in subnets]

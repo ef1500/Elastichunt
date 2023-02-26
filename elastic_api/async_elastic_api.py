@@ -68,6 +68,9 @@ class ElasticAPI(object):
         self.Filters = Filters
         self.ElasticDB = None
         self.filtered_indices = list()
+        
+        # Clean the hostname for folder naming purposes
+        self.clean_host = self.host[7:-5]
 
     async def is_elastic(self):
         """Check if the Host is an elasticsearch database"""

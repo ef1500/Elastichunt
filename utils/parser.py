@@ -26,8 +26,22 @@ class PercentParser:
         else:
             self.fmt_data = fmt_data
 
-        self.repls = {key_a: fmt_data[value_a] for key_a, value_a in
-                      fmt_token_repls.items() if value_a in fmt_data}
+        self.repls = {key_a: str(self.fmt_data[value_a]) for key_a, value_a in
+                      fmt_token_repls.items() if value_a in self.fmt_data}
+
+    def add_repl(self, key, value):
+        """Add a replacement to the existing dict
+
+        Args:
+            key (str): key to insert
+            value (str): value to insert
+        """
+        if not isinstance(key, str):
+            raise TypeError("Key must be a string")
+        if not isinstance(value, str):
+            raise TypeError("Value must be a string")
+
+        self.repls[key] = value
 
     def parse_string(self, input_string: str) -> str:
         """

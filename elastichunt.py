@@ -198,7 +198,8 @@ class AsyncCLI:
                          '  %%Bf  Build flavor\n'
                          '  %%Bt  Build type\n'
                          '  %%Bs  Build snapshot\n'
-                         '  %%Lv  Lucene version'
+                         '  %%Lv  Lucene version\n'
+                         '  %%Ha  Host IP Address'
                          ' Only works when downloading a single database.'
         )
 
@@ -223,10 +224,14 @@ class AsyncCLI:
             help="use the Single Download Module"
         )
 
-    def parse_foldername(self, args: argparse.Namespace, 
+    async def parse_foldername(self, args: argparse.Namespace,
                                elastic_api_obj: elastic_api.ElasticAPI):
         # Create a temporary parser for the folder format
+        if not elastic_api_obj.ElasticDB:
+            await elastic_api_obj.get_db_info()
+            await elastic_api_obj.get_db_indicies()
         temp_parser=util_parser.PercentParser(self.FOLDER_SUBSTITUTIONS, elastic_api_obj.ElasticDB)
+        temp_parser.add_repl('Ha', str(elastic_api_obj.clean_host))
         return temp_parser.parse_string(args.folderformat)
 
     async def download_single_index(self, args: argparse.Namespace):
@@ -235,19 +240,21 @@ class AsyncCLI:
         Args:
             args (argparse.Namespace): CLI Args
         """
-        if args.folderformat:
-            download_path = os.path.join(args.downloadpath, args.folderformat)
-        else:
-            download_path = args.downloadpath
-
         host = f"http://{args.ipaddr}:{args.port}"
         db_api = elastic_api.ElasticAPI(
             host=host,
             timeout=args.elastictimeout,
-            download_path=download_path,
             download=True,
             Filters=None
         )
+
+        if args.folderformat:
+            folder_name = await self.parse_foldername(args, db_api)
+            download_path = os.path.join(args.downloadpath,
+                                         folder_name)
+        else:
+            download_path = args.downloadpath
+
         output_filename = args.output if args.output else args.index
         await db_api.get_db_info()
         await db_api.get_db_indicies()

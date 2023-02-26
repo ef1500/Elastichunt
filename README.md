@@ -20,27 +20,36 @@ This program aims to provide you with the "swiss army knife" of elasticsearch da
 
 
 ## Getting Started
+### Installation
+To get started, clone this repository and run `python3 -m pip install -r requirements.txt` to install the necessary requirements. 
 
-To get started, clone this repository and run `python3 -m pip install -r requirements.txt` to install the necessary requirements. Once that finishes, run `python3 elastichunt.py -h` to view the avaliable options. You should be greeted with a wall of options.
+Once that finishes, run `python3 elastichunt.py -h` to view the avaliable options. You should be greeted with a wall of options.
 You do not need to use all of these options. Depending on the use case, a different combination of arguments will be used. 
+
+## Basic Usage
+Once you have installed Elastichunt, you can start using it right away. The following are a few basic examples of ElasticHunt's usage.
 
 ### Searching the internet for databases
 
-To search databases, you can use this:
+To search databases, you can use the following command:
+
 `python3 elastichunt.py 192.168.0.0/16 9200 --elastictimeout 16 --scannertimeout 16`
 
-This will scan for any elasticdatabases in the given IP address or IP range. `--elastictimeout` is the timeout for the elastic API, and `--scannertimeout` is the timeout for the scanner. I've found that anything above 10 seems to work best.
+This will scan for any elasticdatabases in the given IP address or IP range. `--elastictimeout` is the timeout for the elastic API, and `--scannertimeout` is the timeout for the scanner. I've found that anything above 10 seems to work best. Play around and experiment to find what timeout best suits your circumstance.
+
+**NOTE: THE PROGRESS BAR WILL NOT START RIGHT AWAY**
 
 ### Downloading databases
 
-To Download a database index, you can use this:
+To Download a database index, you can use the following command:
+
 `python3 elastichunt.py 192.168.1.1 9200 --elastictimeout 16 --index user_index --single`
 
 This will download the `user_index` index, and will download it to the current path. Using the `--single` argument tells elastichunt that we want to download a single index. Elastichunt will automatically resolve the fieldnames on its own, but if you would like to specify your own, you can use the `-fn` argument once for each fieldname you would like to download. (e.g. `-fn username -fn display_name -fn email`)
 
 To download indices automatically, you can use the `--download` argument like so:
 `python3 elastichunt.py 192.168.0.0 --elastictimeout 16 --scannertimeout 16 --download`
-- NOTE: I reccomend using filters when downloading indices automatically. 
+- NOTE: I reccomend using filters when downloading indices automatically. Some servers have thousands of logs, and if your filters aren't on, you may end up downloading over a terabyte of redundant information!
 
 ### Using filters
 
@@ -68,6 +77,7 @@ Here is what an example filters.json file may look like:
 - `field_name` - The field name to filter on. This is **not** the fieldnames of the data. This refers to the dataclass field names for each index, and has the following field names: `health`, `status`, `index`, `uuid`, `pri`, `rep`, `docs_count`, `docs_deleted`, `store_size` and `pri_store_size`.
 - `filter_items` - The items you would like the filter to find. Will match any indices with the specified items.
 You can then add the filters to the cli like so:
+
 `python3 elastichunt.py 192.168.0.0/16 9200 --elastictimeout 16 --scannertimeout 16 --filters=filters.json`
 
 ## Advanced usage
@@ -87,10 +97,9 @@ WARNING: Increasing this number will also increase memory usage, use at your own
 - `--maxhosts` is the maximum number of hosts per subnet. Defaults to 256, Not really too useful.
 
 - `--maxsubnets` is the number of subnets per worker. Each worker is assigned a certain number of subnets to scan, and once they finish, they get a new batch of subnets. The `--maxsubnets` determines the size of each batch. 
-
 ## Upcoming Feautres
 These are features that I am working to implement currently (or hope to implement in the future):
-- Adaptive Search Size (So you can download any database)
+- Adaptive Search Size (So you can download any database) DONE!
 - No Warn Option (Sometimes the terminal gets really crowded because of the mapping warning)
 - Better database checking when using the `--staged` option
 - Cleaner CLI (The CLI gets really hard to read with all the text sometimes)
